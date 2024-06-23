@@ -1,0 +1,90 @@
+{% extends 'layout/layout.html' %}
+
+{% block title  %}
+  Главная страница
+{% endblock %}
+
+{% block content %}
+
+
+
+
+
+    <main class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <h1 class="text-center mb-4">Book Your Flight</h1>
+                    <form method="POST" action="{% url 'search_flights' %}">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="from" class="form-label">From</label>
+                                <select class="form-control" id="from" name="from">
+                                    {% for city in cities %}
+                                        <option value="{{ city.cityid }}">{{ city.cityname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="to" class="form-label">To</label>
+                                <select class="form-control" id="to" name="to">
+                                    {% for city in cities %}
+                                        <option value="{{ city.cityid }}">{{ city.cityname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="depart" class="form-label">Departure Date</label>
+                                <input type="date" class="form-control" id="depart" name="depart">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passengers" class="form-label">Number of Passengers</label>
+                            <input type="number" class="form-control" id="passengers" name="passengers" min="1" value="1">
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Search Flights</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if flights %}
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-8">
+                    <h2 class="text-center mb-4">Доступные рейсы</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Flight ID</th>
+                                <th>Departure</th>
+                                <th>Arrival</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for flight in flights %}
+                            <tr>
+                                <td>{{ flight.flightid }}</td>
+                                <td>{{ flight.routeid.startairportid.cityid.cityname }}</td>
+                                <td>{{ flight.routeid.destinationairportid.cityid.cityname }}</td>
+                                <td>{{ flight.departure|date:"d E Y H:i" }}</td>
+                                <td>{{ flight.arrival|date:"d E Y H:i" }}</td>
+                                <td>{{ flight.price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+
+
+
+{% endblock %}

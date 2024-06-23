@@ -1,0 +1,80 @@
+{% extends 'layout/layout.html' %}
+
+{% block title %}Search Flights{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Поиск билетов</h1>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col">
+                <label for="id_from_city">Город отправления</label>
+                <select name="from_city" class="form-control" id="id_from_city">
+                    {% for city in cities %}
+                    <option value="{{ city.cityid }}">{{ city.cityname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <label for="id_to_city">Город назначения</label>
+                <select name="to_city" class="form-control" id="id_to_city">
+                    {% for city in cities %}
+                    <option value="{{ city.cityid }}">{{ city.cityname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                {{ form.depart_date.label_tag }}
+                {{ form.depart_date }}
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form.passengers.label_tag }}
+            {{ form.passengers }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Найти билеты</button>
+        </div>
+    </form>
+{% if flights %}
+    <h2>Available Flights</h2>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Flight ID</th>
+                <th>Откуда</th>
+                <th>Куда</th>
+                <th>Время отправления</th>
+                <th>Время прибытия</th>
+                <th>Цена</th>
+{#                <th>Action</th>#}
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flights %}
+            <tr>
+                <td>{{ flight.flightid }}</td>
+                <td>{{ flight.routeid.startairportid.cityid.cityname }}</td>
+                <td>{{ flight.routeid.destinationairportid.cityid.cityname }}</td>
+                <td>{{ flight.departure|date:"d E Y H:i" }}</td>
+                <td>{{ flight.arrival|date:"d E Y H:i" }}</td>
+                <td>{{ flight.price }}</td>
+                <td>
+                    <form method="post" action="{% url 'registration' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="flight_id" value="{{ flight.flightid }}">
+                        <button type="submit" class="btn btn-success">Купить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Рейсы не найдены</p>
+{% endif %}
+</div>
+{% endblock %}

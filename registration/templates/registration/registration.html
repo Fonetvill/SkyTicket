@@ -1,0 +1,21 @@
+{% extends 'layout/layout.html' %}
+
+{% block title  %}
+  Регистрация
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Регистрация пассажира</h1>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="flight_id" value="{{ flight_id }}">
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+</div>
+
+
+
+
+{% endblock %}
